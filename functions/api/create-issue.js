@@ -7,6 +7,7 @@ var corsHeaders = {
     "Access-Control-Max-Age": "86400"
 };
 
+var responseErrorStatus = 400;
 
 // Respond to OPTIONS method
 export async function onRequestOptions(context) {
@@ -35,17 +36,20 @@ export async function onRequest(context) {
 
 export async function onRequestPost(context) {
     try {
+        var origin = context.request.headers.get('origin');
+        if (allowedOrigins.includes(origin)) {
+            corsHeaders['Access-Control-Allow-Origin'] = origin;
+        }
         let input = await context.request.json();
-        console.log(input);
-        var chosenRepo = ""
+        var chosenRepo = "";
         if (!input.repo || !input.title || !input.body) {
-            return new Response('Some params are missing', { status: 400 });
+            return new Response('Some params are missing', { status: responseErrorStatus, headers: corsHeaders });
         }
         if (input.repo == "KAD" || input.repo == "PolishAnnoyanceFilters") {
-            chosenRepo = input.repo
+            chosenRepo = input.repo;
         }
 
-        if (chosenRepo != "") {
+        if (chosenRepo.length > 0) {
             try {
                 const app = new App({
                     appId: context.env.FH_POSTMAN_APP_ID,
@@ -53,22 +57,32 @@ export async function onRequestPost(context) {
                 });
                 const octokit = await app.getInstallationOctokit(context.env.FH_POSTMAN_APP_INSTALLATION_ID);
 
-                var createIssue = await octokit.rest.issues.create({
+                var createIssueReponse = await octokit.rest.issues.create({
                     owner: "FiltersHeroes",
                     repo: chosenRepo,
                     title: input.title,
                     body: input.body,
                 });
-                if (createIssue.html_url) {
-                    return new Response(createIssue.html_url, { status: 200 });
+                if (createIssueReponse) {
+                    console.log(createIssueReponse);
+                    responseErrorStatus = createIssueReponse.status;
+                    if (createIssueReponse.data) {
+                        var issueHtmlUrl = createIssueReponse.data.html_url;
+                        if (issueHtmlUrl) {
+                            return new Response(issueHtmlUrl, { status: 200, headers: corsHeaders });
+                        }
+                    }
+                    return new Response('An error occured while sending issue to GitHub', { status: responseErrorStatus, headers: corsHeaders });
                 }
             }
             catch (error) {
-                return new Response('An error occured while sending issue to GitHub', { status: 400 });
+                return new Response('An error occured while sending issue to GitHub', { status: responseErrorStatus, headers: corsHeaders });
             }
         }
-        return new Response('You sent wrong data', { status: 400 });
+        else {
+            return new Response('You sent wrong data', { status: responseErrorStatus, headers: corsHeaders });
+        }
     } catch (err) {
-        return new Response('Error parsing content', { status: 400 });
+        return new Response('Error parsing content', { status: responseErrorStatus, headers: corsHeaders });
     }
 };
