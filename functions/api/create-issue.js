@@ -6,7 +6,7 @@ var corsHeaders = {
     "Access-Control-Allow-Headers": "*",
     "Access-Control-Max-Age": "86400"
 };
-  
+
 
 // Respond to OPTIONS method
 export async function onRequestOptions(context) {
@@ -15,11 +15,11 @@ export async function onRequestOptions(context) {
         corsHeaders['Access-Control-Allow-Origin'] = origin;
     }
     return new Response(null, {
-      status: 204,
-      headers: corsHeaders
+        status: 204,
+        headers: corsHeaders
     });
 };
-  
+
 // Set CORS to all /api responses
 export async function onRequest(context) {
     const response = await context.next();
@@ -27,7 +27,9 @@ export async function onRequest(context) {
     if (allowedOrigins.includes(origin)) {
         corsHeaders['Access-Control-Allow-Origin'] = origin;
     }
-    response.headers = corsHeaders;
+    for (const [key, value] of Object.entries(corsHeaders)) {
+        response.headers.set(key, value);
+    }
     return response;
 };
 
