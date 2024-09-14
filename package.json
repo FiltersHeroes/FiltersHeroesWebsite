@@ -1,0 +1,13 @@
+{
+  "name": "filtersheroeswebsite",
+  "version": "1.0.0",
+  "description": "Special website for our projects.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "FiltersHeroes",
+  "license": "CC BY-SA 4.0",
+  "dependencies": {
+    "octokit": "^4.0.2"
+  }
+}
