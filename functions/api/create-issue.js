@@ -3,7 +3,6 @@ import { App } from "octokit";
 const allowedOrigins = ["https://kadantiscam.netlify.app", "https://polishannoyancefilters.netlify.app"];
 var corsHeaders = {
     "Access-Control-Allow-Methods": "GET, HEAD, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "*",
     "Access-Control-Max-Age": "86400"
 };
 
@@ -55,16 +54,14 @@ export async function onRequestPost(context) {
                 if (input.labels) {
                     createIssueParams["labels"] = input.labels;
                 }
-                var createIssueReponse = await octokit.rest.issues.create({
-                    createIssueParams
-                });
+                var createIssueReponse = await octokit.rest.issues.create(createIssueParams);
                 if (createIssueReponse) {
                     console.log(createIssueReponse);
                     responseErrorStatus = createIssueReponse.status;
                     if (createIssueReponse.data) {
                         var issueHtmlUrl = createIssueReponse.data.html_url;
                         if (issueHtmlUrl) {
-                            return new Response(issueHtmlUrl, { status: 200 });
+                            return new Response(issueHtmlUrl, { status: 200, headers: corsHeaders });
                         }
                     }
                     return new Response('An error occured while sending issue to GitHub', { status: responseErrorStatus, headers: corsHeaders });
