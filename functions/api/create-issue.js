@@ -9,37 +9,26 @@ var corsHeaders = {
 
 var responseErrorStatus = 400;
 
-// Respond to OPTIONS method
-export async function onRequestOptions(context) {
+
+function setAllowOrigin(context) {
     var origin = context.request.headers.get('origin');
     if (allowedOrigins.includes(origin)) {
         corsHeaders['Access-Control-Allow-Origin'] = origin;
     }
+}
+
+// Respond to OPTIONS method
+export async function onRequestOptions(context) {
+    setAllowOrigin(context);
     return new Response(null, {
         status: 204,
         headers: corsHeaders
     });
 };
 
-// Set CORS to all /api responses
-export async function onRequest(context) {
-    const response = await context.next();
-    var origin = context.request.headers.get('origin');
-    if (allowedOrigins.includes(origin)) {
-        corsHeaders['Access-Control-Allow-Origin'] = origin;
-    }
-    for (const [key, value] of Object.entries(corsHeaders)) {
-        response.headers.set(key, value);
-    }
-    return response;
-};
-
 export async function onRequestPost(context) {
     try {
-        var origin = context.request.headers.get('origin');
-        if (allowedOrigins.includes(origin)) {
-            corsHeaders['Access-Control-Allow-Origin'] = origin;
-        }
+        setAllowOrigin(context);
         let input = await context.request.json();
         var chosenRepo = "";
         if (!input.repo || !input.title || !input.body) {
@@ -57,11 +46,17 @@ export async function onRequestPost(context) {
                 });
                 const octokit = await app.getInstallationOctokit(context.env.FH_POSTMAN_APP_INSTALLATION_ID);
 
-                var createIssueReponse = await octokit.rest.issues.create({
+                var createIssueParams = {
                     owner: "FiltersHeroes",
                     repo: chosenRepo,
                     title: input.title,
                     body: input.body,
+                };
+                if (input.labels) {
+                    createIssueParams["labels"] = input.labels;
+                }
+                var createIssueReponse = await octokit.rest.issues.create({
+                    createIssueParams
                 });
                 if (createIssueReponse) {
                     console.log(createIssueReponse);
@@ -69,7 +64,7 @@ export async function onRequestPost(context) {
                     if (createIssueReponse.data) {
                         var issueHtmlUrl = createIssueReponse.data.html_url;
                         if (issueHtmlUrl) {
-                            return new Response(issueHtmlUrl, { status: 200, headers: corsHeaders });
+                            return new Response(issueHtmlUrl, { status: 200 });
                         }
                     }
                     return new Response('An error occured while sending issue to GitHub', { status: responseErrorStatus, headers: corsHeaders });
