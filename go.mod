@@ -3,6 +3,7 @@ module github.com/FiltersHeroes/FiltersHeroesWebsite
 go 1.23.1
 
 require (
+	github.com/FiltersHeroes/ModsForHinode v0.0.0-20240915141548-8001f0794294 // indirect
 	github.com/airbnb/lottie-web v5.12.2+incompatible // indirect
 	github.com/gethinode/hinode v0.26.7 // indirect
 	github.com/gethinode/mod-bootstrap v1.3.1 // indirect
