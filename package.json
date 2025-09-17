@@ -8,6 +8,6 @@
   "author": "FiltersHeroes",
   "license": "CC BY-SA 4.0",
   "dependencies": {
-    "@tsndr/cloudflare-worker-jwt": "^2.5.3"
+    "@tsndr/cloudflare-worker-jwt": "^3.2.0"
   }
 }

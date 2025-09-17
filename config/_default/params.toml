@@ -1,8 +1,6 @@
 [main]
     separator = "|"
     description = ""
-    enableDarkMode = true
-    modes = ["light", "dark"]
     canonifyAssetsURLs = true
     footerBelowFold = false
     loading = "lazy"
@@ -12,13 +10,18 @@
         tab = true
     [main.build]
         transpiler = "libsass"
+    [main.colorMode]
+        enabled = true
+        modes = ["light", "dark"]
 
 [modules]
+    [modules.GoogleAnalytics]
+        integration = "none"
     [modules.bootstrap]
         integration = "core"
         excludeSCSS = true
     [modules.katex]
-        # integration = "core"
+        integration = "none"
         disableTemplate = true
         state = "defer"
     [modules.flexsearch]
@@ -59,12 +62,13 @@
     overlayMode = "dark"
     horizontal = false
     offset = "5.5rem"
-    search = false
-    searchModal = false
     breadcrumb = true
     toc = true
     sidebar = true
     size = "md"
+    [navigation.search]
+        enabled = false
+        modal = true
 
 [messages]
     placement = "bottom-right"

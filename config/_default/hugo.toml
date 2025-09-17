@@ -1,6 +1,6 @@
 resourcedir = '../resources/'
 title = "Filters Heroes"
-copyright = "Copyright © 2024 Filters Heroes."
+copyright = "Copyright © 2025 Filters Heroes."
 enableGitInfo = true
 
 # additional settings
@@ -35,11 +35,14 @@ home = ["HTML", "RSS"]
   pagerSize = 9
 
 [privacy]
+  [privacy.googleAnalytics]
+    disable = true
+
   [privacy.vimeo]
     disabled = false
     simple = true
 
-  [privacy.twitter]
+  [privacy.x]
     disabled = false
     enableDNT = true
     simple = true
@@ -55,17 +58,8 @@ home = ["HTML", "RSS"]
 [services]
   [services.instagram]
     disableInlineCSS = true
-  [services.twitter]
+  [services.x]
     disableInlineCSS = true
-
-[outputFormats]
-  [outputFormats.XML]
-    isPlainText = false
-    mediaType = "application/xml"
-    isHtml = false
-    noUgly = true
-    permalinkable = false
-    name = "xml"
 
 [module]
   [[module.imports]]
