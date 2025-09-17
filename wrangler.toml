@@ -5,6 +5,6 @@ compatibility_date = "2024-09-15"
 [vars]
 HUGO_ENV = "production"
 HUGO_VERSION = "0.150.0"
-GO_VERSION = "1.24"
-NODE_VERSION = "22"
+GO_VERSION = "1.24.7"
+NODE_VERSION = "22.19"
 PNPM_VERSION = "10.17"
